@@ -17,13 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class EventController {
 
     private final EventRepository events;
+    private final EventMapper mapper;
 
     @PostMapping
-    public ResponseEntity<Event> create(@RequestBody Event event) {
-        Event save = events.save(event);
+    public ResponseEntity<Event> create(@RequestBody EventDTO eventDTO) {
+        Event save = events.save(mapper.mapFrom(eventDTO));
         URI uri = linkTo(EventController.class).slash(save.getId()).toUri();
 
         return ResponseEntity.created(uri)
-            .body(event);
+            .body(save);
     }
 }

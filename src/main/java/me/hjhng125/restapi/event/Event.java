@@ -51,5 +51,6 @@ public class Event {
     private boolean free;
 
     @Enumerated(STRING)
-    private EventStatus eventStatus;
+    @Builder.Default
+    private EventStatus eventStatus = EventStatus.DRAFT;
 }
