@@ -1,2 +1,6 @@
 server:
   port: 8081
+spring:
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true

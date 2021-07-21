@@ -75,4 +75,40 @@ public class EventControllerIntegrationTest {
         ;
 
     }
+
+    /**
+     * application.yml 에 spring.jackson.deserialization.fail-on-unknown-properties 값을 true 로 주었다.
+     * 이 옵션은 파라미터인 EventDTO 가 받을 수 없는 Property 가 넘어온 경우 BadRequest 를 리턴한다.
+     * @throws Exception
+     */
+    @Test
+    void createEvent_제한된_입력값_요청_시_에러_test() throws Exception {
+
+        Event event = Event.builder()
+            .id(2)
+            .name("Spring")
+            .description("REST API")
+            .beginEnrollmentDateTime(LocalDateTime.of(2021, 7, 21, 0, 0, 0))
+            .closeEnrollmentDateTime(LocalDateTime.of(2021, 7, 28, 23, 59, 59))
+            .beginEventDateTime(LocalDateTime.of(2021, 8, 1, 0, 0, 0))
+            .closeEventDateTime(LocalDateTime.of(2021, 8, 1, 23, 59, 59))
+            .basePrice(100)
+            .maxPrice(200)
+            .limitOfEnrollment(100)
+            .location("강남역")
+            .free(true)
+            .offline(true)
+            .eventStatus(EventStatus.PUBLISHED)
+            .build();
+
+        mockMvc.perform(post("/api/events/")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(event))
+            .accept(MediaTypes.HAL_JSON)
+        )
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+        ;
+
+    }
 }
