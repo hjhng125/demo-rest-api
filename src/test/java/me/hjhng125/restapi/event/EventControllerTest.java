@@ -33,6 +33,8 @@ public class EventControllerTest {
     EventRepository events;
     @MockBean
     EventMapper mapper;
+    @MockBean
+    EventDTOValidator validator;
 
     /**
      * 이제 컨트롤러가 Event 타입이 아닌 EventDTO 로 받게 되었고,
