@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class EventController {
 
+    private final EventRepository events;
 
     @PostMapping
     public ResponseEntity<Event> create(@RequestBody Event event) {
-        URI uri = linkTo(EventController.class).slash("{id}").toUri();
-        event.setId(1);
+        Event save = events.save(event);
+        URI uri = linkTo(EventController.class).slash(save.getId()).toUri();
+
         return ResponseEntity.created(uri)
             .body(event);
     }
