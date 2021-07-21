@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -38,9 +39,9 @@ public class EventControllerIntegrationTest {
      * 입력값 제한 id 또는 계산되어야 하는 값들은 입력되지 않도록 제한하기 DTO로 분리하여 파라미터를 DTO로 받으면 DTO에 있는 것만 받아온다.
      */
     @Test
+    @DisplayName("테스트 성공을 위해 EventDTO 로 변경")
     void createEvent_입력값_제한_test() throws Exception {
 
-        // 테스트 성공을 위해 EventDTO 로 변경
         EventDTO event = EventDTO.builder()
             .name("Spring")
             .description("REST API")
@@ -78,6 +79,7 @@ public class EventControllerIntegrationTest {
      * @throws Exception
      */
     @Test
+    @DisplayName("입력 받을 수 없는 값을 사용한 경우 에러가 발생한다.")
     void createEvent_제한된_입력값_요청_시_에러_test() throws Exception {
 
         Event event = Event.builder()
@@ -109,6 +111,7 @@ public class EventControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("필수 입력 값이 없는 경우 에러가 발생한다.")
     void createEvent_필수_값이_없는_경우_에러_test() throws Exception {
         EventDTO eventDTO = EventDTO.builder()
             .name("Spring")
