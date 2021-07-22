@@ -69,6 +69,9 @@ public class EventControllerIntegrationTest {
             .andExpect(jsonPath("free").value(Matchers.is(false)))
             .andExpect(jsonPath("offline").value(Matchers.is(true)))
             .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()))
+            .andExpect(jsonPath("_links.self").exists())
+            .andExpect(jsonPath("_links.get-events").exists())
+            .andExpect(jsonPath("_links.update-event").exists())
         ;
 
     }
