@@ -9,8 +9,11 @@ public class EventDTOValidator {
 
     public void validate(EventDTO eventDTO, Errors errors) {
         if (eventDTO.getMaxPrice() < eventDTO.getBasePrice() && eventDTO.getMaxPrice() != 0) {
+            // error 를 reject 할 때 rejectValue 메서드를 사용하면 해당 필드에 에러가 들어간다. - 해당 필드에 해당하는 에러임을 선언
+            // 하지만 여러개의 값이 조합되어 에러가 발생한 경우 reject() 사용 - 글로벌 에러
             errors.rejectValue("basePrice", "wrongValue", "BasePrice is wrong");
             errors.rejectValue("maxPrice", "wrongValue", "MaxPrice is wrong");
+            errors.reject("wrongPrice", "Values for prices are wrong");
         }
 
         LocalDateTime closeEventDateTime = eventDTO.getCloseEventDateTime();

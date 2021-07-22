@@ -132,4 +132,34 @@ public class EventControllerIntegrationTest {
         )
             .andExpect(status().isBadRequest());
     }
+
+    @Test
+    @DisplayName("응답을 확인")
+    void createEvent_응답_확인_test() throws Exception {
+        EventDTO eventDTO = EventDTO.builder()
+            .name("Spring")
+            .description("REST API")
+            .beginEnrollmentDateTime(LocalDateTime.of(2021, 7, 21, 0, 0, 0))
+            .closeEnrollmentDateTime(LocalDateTime.of(2021, 7, 28, 23, 59, 59))
+            .beginEventDateTime(LocalDateTime.of(2021, 8, 1, 0, 0, 0))
+            .closeEventDateTime(LocalDateTime.of(2020, 8, 1, 23, 59, 59)) // 종료일이 시작일보다 이전?
+            .basePrice(1000) // base 가 max 보다 크다?
+            .maxPrice(200)
+            .limitOfEnrollment(100)
+            .location("강남역")
+            .build();
+
+        mockMvc.perform(post("/api/events")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(eventDTO))
+        )
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$[0].objectName").exists())
+//            .andExpect(jsonPath("$[0].field").exists())
+            .andExpect(jsonPath("$[0].defaultMessage").exists())
+            .andExpect(jsonPath("$[0].code").exists())
+//            .andExpect(jsonPath("$[0].rejectedValue").exists())
+        ;
+    }
 }
