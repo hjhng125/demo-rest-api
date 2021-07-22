@@ -22,14 +22,15 @@ import lombok.Setter;
 @Entity
 @Builder
 @EqualsAndHashCode(of = "id") // 기본은 모든 필드를 사용함.
-                              // 하지만 이런경우 연관관계가 상호 참조 관계일 경우
-                              // stackOverFlow가 발생할 수 있기에 id만을 사용함.
-                              // @Data는 EqualsAndHashCode를 기본으로 포함하여 위와 같은 이유로 Entity에서 사용하지 말자.
+// 하지만 이런경우 연관관계가 상호 참조 관계일 경우
+// stackOverFlow가 발생할 수 있기에 id만을 사용함.
+// @Data는 EqualsAndHashCode를 기본으로 포함하여 위와 같은 이유로 Entity에서 사용하지 말자.
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class Event {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Integer id;
 
     private String name;
@@ -53,4 +54,11 @@ public class Event {
     @Enumerated(STRING)
     @Builder.Default
     private EventStatus eventStatus = EventStatus.DRAFT;
+
+    public void update() {
+        this.free = this.basePrice == 0 && this.maxPrice == 0;
+
+        this.offline = this.location != null && !this.location.isBlank();
+
+    }
 }
