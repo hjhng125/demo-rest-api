@@ -1,6 +1,15 @@
 package me.hjhng125.restapi.event;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -78,7 +87,58 @@ public class EventControllerIntegrationTest {
             .andExpect(jsonPath("_links.self").exists())
             .andExpect(jsonPath("_links.get-events").exists())
             .andExpect(jsonPath("_links.update-event").exists())
-        .andDo(document("create-event"))
+            .andDo(document("create-event",
+                links(
+                    linkWithRel("self").description("link to self"), // Specifies the description
+                    linkWithRel("get-events").description("link to query events"),
+                    linkWithRel("update-event").description("link to update event")
+                ),
+                requestHeaders(
+                    headerWithName(HttpHeaders.CONTENT_TYPE).description("require hal json"),
+                    headerWithName(HttpHeaders.ACCEPT).description("accept header")
+                ),
+                requestFields(
+                    fieldWithPath("name").description("name of new event"),
+                    fieldWithPath("description").description("description of new event"),
+                    fieldWithPath("beginEnrollmentDateTime").description("beginEnrollmentDateTime of new event"),
+                    fieldWithPath("closeEnrollmentDateTime").description("closeEnrollmentDateTime of new event"),
+                    fieldWithPath("beginEventDateTime").description("beginEventDateTime of new event"),
+                    fieldWithPath("closeEventDateTime").description("closeEventDateTime of new event"),
+                    fieldWithPath("location").description("location of new event"),
+                    fieldWithPath("basePrice").description("basePrice of new event"),
+                    fieldWithPath("maxPrice").description("maxPrice of new event"),
+                    fieldWithPath("limitOfEnrollment").description("limitOfEnrollment of new event")
+                ),
+                responseHeaders(
+                    headerWithName(HttpHeaders.LOCATION).description("location header"),
+                    headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header"),
+                    headerWithName(HttpHeaders.CONTENT_LENGTH).description("content length header")
+                ),
+//                relaxedResponseFields( // relaxedResponseFields 를 사용하지 않으면 모든 응답에 대해 서숧해야한다.
+                                         //가령 _link 정보를 포함해야 하나, 그것은 이미 위에서 link 정보로 보여주기 때문에 여기선 제외한다.
+                                         // relaxedResponseFields 장점 : 문서의 일부만 테스트할 수 있다.
+                                         // relaxedResponseFields 단점 : 문서의 일부분만 테스트하기에 정확한 문서를 생성하는 것이 아니다. api 스펙이 추가되거나 변경되었을 때 변경을 감지할 수 없다.
+                responseFields(
+                    fieldWithPath("id").description("identifier of new event"),
+                    fieldWithPath("name").description("name of new event"),
+                    fieldWithPath("description").description("description of new event"),
+                    fieldWithPath("beginEnrollmentDateTime").description("beginEnrollmentDateTime of new event"),
+                    fieldWithPath("closeEnrollmentDateTime").description("closeEnrollmentDateTime of new event"),
+                    fieldWithPath("beginEventDateTime").description("beginEventDateTime of new event"),
+                    fieldWithPath("closeEventDateTime").description("closeEventDateTime of new event"),
+                    fieldWithPath("location").description("location of new event"),
+                    fieldWithPath("basePrice").description("basePrice of new event"),
+                    fieldWithPath("maxPrice").description("maxPrice of new event"),
+                    fieldWithPath("limitOfEnrollment").description("limitOfEnrollment of new event"),
+                    fieldWithPath("free").description("it tells is this event is free or not"),
+                    fieldWithPath("offline").description("it tells is this event is offline or not"),
+                    fieldWithPath("eventStatus").description("event status"),
+                    fieldWithPath("manager").description("this is manager information"),
+                    fieldWithPath("_links.self.href").description("link to self"),
+                    fieldWithPath("_links.get-events.href").description("link to get events"),
+                    fieldWithPath("_links.update-event.href").description("link to update event")
+                )
+            ))
         ;
 
     }
