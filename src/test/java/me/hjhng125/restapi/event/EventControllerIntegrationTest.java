@@ -1,5 +1,6 @@
 package me.hjhng125.restapi.event;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -8,12 +9,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+import me.hjhng125.restapi.common.RestDocsConfiguration;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -21,6 +25,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
+@Import(RestDocsConfiguration.class) // 다른 스프링 빈 설정파일을 읽어오는 어노테이션
 public class EventControllerIntegrationTest {
 
     @Autowired
@@ -39,7 +45,7 @@ public class EventControllerIntegrationTest {
      * 입력값 제한 id 또는 계산되어야 하는 값들은 입력되지 않도록 제한하기 DTO로 분리하여 파라미터를 DTO로 받으면 DTO에 있는 것만 받아온다.
      */
     @Test
-    @DisplayName("테스트 성공을 위해 EventDTO 로 변경")
+    @DisplayName("정상적인 이벤트 생성 요청 테스트")
     void createEvent_입력값_제한_test() throws Exception {
 
         EventDTO event = EventDTO.builder()
@@ -72,6 +78,7 @@ public class EventControllerIntegrationTest {
             .andExpect(jsonPath("_links.self").exists())
             .andExpect(jsonPath("_links.get-events").exists())
             .andExpect(jsonPath("_links.update-event").exists())
+        .andDo(document("create-event"))
         ;
 
     }
@@ -82,7 +89,7 @@ public class EventControllerIntegrationTest {
      * @throws Exception
      */
     @Test
-    @DisplayName("입력 받을 수 없는 값을 사용한 경우 에러가 발생한다.")
+    @DisplayName("입력 받을 수 없는 값을 사용한 경우 테스트")
     void createEvent_제한된_입력값_요청_시_에러_test() throws Exception {
 
         Event event = Event.builder()
@@ -114,7 +121,7 @@ public class EventControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("필수 입력 값이 없는 경우 에러가 발생한다.")
+    @DisplayName("필수 입력 값이 없는 경우 테스트")
     void createEvent_필수_값이_없는_경우_에러_test() throws Exception {
         EventDTO eventDTO = EventDTO.builder()
             .name("Spring")
