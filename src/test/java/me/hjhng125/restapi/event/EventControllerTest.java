@@ -63,12 +63,25 @@ public class EventControllerTest {
             .location("강남역")
             .build();
 
+        EventDTO eventDTO = EventDTO.builder()
+            .name("Spring")
+            .description("REST API")
+            .beginEnrollmentDateTime(LocalDateTime.of(2021, 7, 21, 0, 0, 0))
+            .closeEnrollmentDateTime(LocalDateTime.of(2021, 7, 28, 23, 59, 59))
+            .beginEventDateTime(LocalDateTime.of(2021, 8, 1, 0, 0, 0))
+            .closeEventDateTime(LocalDateTime.of(2021, 8, 1, 23, 59, 59))
+            .basePrice(100)
+            .maxPrice(200)
+            .limitOfEnrollment(100)
+            .location("강남역")
+            .build();
+
         event.setId(1);
-        when(events.save(event)).thenReturn(event);
+        when(events.save(mapper.mapFrom(eventDTO))).thenReturn(event);
 
         mockMvc.perform(post("/api/events/")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(event))
+            .content(objectMapper.writeValueAsString(eventDTO))
             .accept(MediaTypes.HAL_JSON)
         )
             .andDo(print())

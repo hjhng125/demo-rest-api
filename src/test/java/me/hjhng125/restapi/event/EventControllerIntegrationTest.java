@@ -7,7 +7,6 @@ import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.li
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -84,14 +83,16 @@ public class EventControllerIntegrationTest {
             .andExpect(jsonPath("free").value(Matchers.is(false)))
             .andExpect(jsonPath("offline").value(Matchers.is(true)))
             .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()))
-            .andExpect(jsonPath("_links.self").exists())
-            .andExpect(jsonPath("_links.get-events").exists())
-            .andExpect(jsonPath("_links.update-event").exists())
+//            .andExpect(jsonPath("_links.self").exists())
+//            .andExpect(jsonPath("_links.get-events").exists())
+//            .andExpect(jsonPath("_links.update-event").exists())
+//            .andExpect(jsonPath("_links.profile").exists()) // 문서화할 때 링크에 대해 테스트를 진행하기 때문에 여기서는 테스트하지 않아도됨.
             .andDo(document("create-event",
                 links(
                     linkWithRel("self").description("link to self"), // Specifies the description
                     linkWithRel("get-events").description("link to query events"),
-                    linkWithRel("update-event").description("link to update event")
+                    linkWithRel("update-event").description("link to update event"),
+                    linkWithRel("profile").description("link to profile")
                 ),
                 requestHeaders(
                     headerWithName(HttpHeaders.CONTENT_TYPE).description("require hal json"),
@@ -136,7 +137,8 @@ public class EventControllerIntegrationTest {
                     fieldWithPath("manager").description("this is manager information"),
                     fieldWithPath("_links.self.href").description("link to self"),
                     fieldWithPath("_links.get-events.href").description("link to get events"),
-                    fieldWithPath("_links.update-event.href").description("link to update event")
+                    fieldWithPath("_links.update-event.href").description("link to update event"),
+                    fieldWithPath("_links.profile.href").description("link to profile")
                 )
             ))
         ;
