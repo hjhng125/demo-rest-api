@@ -2,6 +2,7 @@ package me.hjhng125.restapi.event;
 
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 
 @Component

@@ -8,6 +8,7 @@ import java.util.Arrays;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -50,7 +51,8 @@ public class EventController {
         EntityModel<Event> entityModel = EntityModel.of(save, Arrays.asList(
             linkTo(EventController.class).withRel("get-events"),
             selfLinkBuilder.withSelfRel(),
-            selfLinkBuilder.withRel("update-event")
+            selfLinkBuilder.withRel("update-event"),
+            Link.of("/docs/index.html#resources-events-create").withRel("profile")
         ));
 
         return ResponseEntity.created(uri)

@@ -76,7 +76,6 @@ public class EventControllerIntegrationTest {
         )
             .andDo(print())
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("id").exists())
             .andExpect(header().exists(HttpHeaders.LOCATION))
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
             .andExpect(jsonPath("id").exists())
